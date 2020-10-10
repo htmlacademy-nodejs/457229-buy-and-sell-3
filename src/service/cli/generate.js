@@ -5,6 +5,7 @@ const {
   shuffle,
 } = require(`../auxiliary/utils`);
 const {
+  DESCRIPTION_LENGTH_LIMIT,
   MAX_ADS_COUNT,
   DEFAULT_COUNT,
   TITLES,
@@ -20,18 +21,19 @@ const fs = require(`fs`);
 const getPictureFileName = (code) => {
   const base = `item`;
   const extension = `jpg`;
+  const processedCode = String(code).length === 1 ? `0${code}` : code;
 
-  return `${base}${code}.${extension}`;
+  return `${base}${processedCode}.${extension}`;
 };
 
 const generateAds = (count) => {
   return Array(count).fill({}).map(() => ({
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     picture: getPictureFileName(getRandomInt(PictureCodeLimit.MIN, PictureCodeLimit.MAX)),
-    description: shuffle(SENTENCES).slice(1, 5).join(` `),
-    type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
+    description: shuffle(SENTENCES).slice(1, DESCRIPTION_LENGTH_LIMIT + 1).join(` `),
+    type: Object.values(OfferType)[Math.floor(Math.random() * Object.values(OfferType).length)],
     sum: getRandomInt(SumLimit.MIN, SumLimit.MAX),
-    category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
+    category: shuffle(CATEGORIES).slice(0, getRandomInt(1, CATEGORIES.length)),
   }));
 };
 

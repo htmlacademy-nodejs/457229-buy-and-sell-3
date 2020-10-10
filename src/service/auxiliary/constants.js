@@ -5,6 +5,7 @@ const FILE_NAME = `mocks.json`;
 const MAX_ADS_COUNT = 1000;
 const USER_ARGV_INDEX = 2;
 const DEFAULT_COMMAND = `--help`;
+const DESCRIPTION_LENGTH_LIMIT = 5;
 
 const TITLES = [
   `Продам книги Стивена Кинга`,
@@ -77,6 +78,7 @@ const ExitCode = {
 };
 
 module.exports = {
+  DESCRIPTION_LENGTH_LIMIT,
   ExitCode,
   DEFAULT_COUNT,
   USER_ARGV_INDEX,
