@@ -5,6 +5,7 @@ const {
   shuffle,
 } = require(`../auxiliary/utils`);
 const {
+  MAX_ADS_COUNT,
   DEFAULT_COUNT,
   TITLES,
   SENTENCES,
@@ -34,20 +35,28 @@ const generateAds = (count) => {
   }));
 };
 
+const runGenerateAndSaveScenario = (args) => {
+  const [count] = args;
+  const adsCount = Number.parseInt(count, 10) || DEFAULT_COUNT;
+  if (adsCount > MAX_ADS_COUNT) {
+    console.error(`Не больше ${MAX_ADS_COUNT} объявлений`);
+    process.exit(ExitCode.SUCCESS);
+  }
+
+  const content = JSON.stringify(generateAds(adsCount));
+  fs.writeFile(`mocks.json`, content, (err) => {
+    if (err) {
+      console.error(err);
+      process.exit(ExitCode.ERROR);
+    }
+    console.info(`Operation success. File created.`);
+    process.exit(ExitCode.SUCCESS);
+  });
+};
+
 module.exports = {
   name: `--generate`,
   run(args) {
-    const [count] = args;
-    const adsCount = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateAds(adsCount));
-
-    fs.writeFile(`mocks.json`, content, (err) => {
-      if (err) {
-        console.error(err);
-        process.exit(ExitCode.ERROR);
-      }
-      console.info(`Operation success. File created.`);
-      process.exit(ExitCode.SUCCESS);
-    });
+    runGenerateAndSaveScenario(args);
   }
 };
