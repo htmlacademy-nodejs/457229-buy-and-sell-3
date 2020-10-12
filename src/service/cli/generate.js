@@ -18,13 +18,7 @@ const {
 } = require(`../auxiliary/constants`);
 const fs = require(`fs`);
 
-const getPictureFileName = (code) => {
-  const base = `item`;
-  const extension = `jpg`;
-  const processedCode = String(code).length === 1 ? `0${code}` : code;
-
-  return `${base}${processedCode}.${extension}`;
-};
+const getPictureFileName = (code) => `item${String(code).padStart(2, `0`)}.jpg`;
 
 const generateAds = (count) => {
   return Array(count).fill({}).map(() => ({
