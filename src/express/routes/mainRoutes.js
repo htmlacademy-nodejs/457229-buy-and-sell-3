@@ -1,13 +1,12 @@
 'use strict';
 
 const {Router} = require(`express`);
-const sendReqUrl = require(`../middlewares/sendReqUrl`);
 
 const mainRouter = new Router();
 
-mainRouter.get(`/`, sendReqUrl);
-mainRouter.get(`/login`, sendReqUrl);
-mainRouter.get(`/register`, sendReqUrl);
-mainRouter.get(`/search`, sendReqUrl);
+mainRouter.get(`/`, (req, res) => res.render(`main`));
+mainRouter.get(`/login`, (req, res) => res.render(`login`));
+mainRouter.get(`/register`, (req, res) => res.render(`sign-up`));
+mainRouter.get(`/search`, (req, res) => res.render(`search-result`));
 
 module.exports = mainRouter;
