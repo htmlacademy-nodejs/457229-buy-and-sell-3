@@ -1,11 +1,10 @@
 'use strict';
 
 const {Router} = require(`express`);
-const sendReqUrl = require(`../middlewares/sendReqUrl`);
 
 const myRouter = new Router();
 
-myRouter.get(`/`, sendReqUrl);
-myRouter.get(`/comments`, sendReqUrl);
+myRouter.get(`/`, (req, res) => res.render(`my-tickets`));
+myRouter.get(`/comments`, (req, res) => res.render(`comments`));
 
 module.exports = myRouter;
