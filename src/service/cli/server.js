@@ -1,27 +1,31 @@
 'use strict';
 
 const express = require(`express`);
-const fs = require(`fs`).promises;
-const {StatusCodes: HttpCode} = require(`http-status-codes`);
-const DEFAULT_PORT = `3000`;
-const FILENAME = `mocks.json`;
-const {ERROR} = require(`../auxiliary/constants`);
+const {StatusCodes} = require(`http-status-codes`);
+const {
+  ERROR,
+  API_PREFIX,
+} = require(`../auxiliary/constants`);
+const routes = require(`../api`);
 
+const DEFAULT_PORT = 3000;
 const app = express();
+
 app.use(express.json());
 
-app.get(`/offers`, async (req, res) => {
-  try {
-    const fileContent = await fs.readFile(FILENAME);
-    const mocks = JSON.parse(fileContent);
-    res.json(mocks);
-  } catch (err) {
-    res.json([]);
-  }
+app.use((req, res, next) => {
+  console.log(`Request on route ${req.url}`);
+  res.on(`finish`, () => {
+    console.log(`Response status code ${res.statusCode}`);
+  });
+  next();
 });
 
+
+app.use(API_PREFIX, routes);
+
 app.use((req, res) => res
-  .status(HttpCode.NOT_FOUND)
+  .status(StatusCodes.NOT_FOUND)
   .send(`Not found`));
 
 module.exports = {

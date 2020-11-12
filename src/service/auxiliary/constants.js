@@ -6,6 +6,9 @@ const MAX_ADS_COUNT = 1000;
 const USER_ARGV_INDEX = 2;
 const DEFAULT_COMMAND = `--help`;
 const DESCRIPTION_LENGTH_LIMIT = 5;
+const MAX_ID_LENGTH = 6;
+const MAX_COMMENTS = 5;
+const API_PREFIX = `/api`;
 
 const HELP_TEXT = `
 Программа запускает http-сервер и формирует файл с данными для API.
@@ -40,6 +43,7 @@ const ExitCode = {
 };
 
 module.exports = {
+  API_PREFIX,
   DESCRIPTION_LENGTH_LIMIT,
   ExitCode,
   DEFAULT_COUNT,
@@ -51,4 +55,6 @@ module.exports = {
   SumLimit,
   PictureCodeLimit,
   HELP_TEXT,
+  MAX_ID_LENGTH,
+  MAX_COMMENTS,
 };

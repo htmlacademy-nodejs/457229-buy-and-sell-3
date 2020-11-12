@@ -1,6 +1,7 @@
 'use strict';
 
 const chalk = require(`chalk`);
+const {nanoid} = require(`nanoid`);
 const fs = require(`fs`).promises;
 const {
   getRandomInt,
@@ -13,11 +14,14 @@ const {
   OfferType,
   SumLimit,
   PictureCodeLimit,
-  ExitCode
+  ExitCode,
+  MAX_ID_LENGTH,
+  MAX_COMMENTS,
 } = require(`../auxiliary/constants`);
 const FILE_SENTENCES_PATH = `${__dirname}/../../../data/sentences.txt`;
 const FILE_TITLES_PATH = `${__dirname}/../../../data/titles.txt`;
 const FILE_CATEGORIES_PATH = `${__dirname}/../../../data/categories.txt`;
+const FILE_COMMENTS_PATH = `${__dirname}/../../../data/comments.txt`;
 
 const readContent = async (filePath) => {
   try {
@@ -31,10 +35,22 @@ const readContent = async (filePath) => {
   }
 };
 
+const generateComments = (count, comments) => {
+  return Array(count).fill({}).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, 2))
+      .join(` `),
+  }));
+};
+
 const getPictureFileName = (code) => `item${String(code).padStart(2, `0`)}.jpg`;
 
-const generateAds = (count, titles, categories, sentences) => {
+const generateAds = (count, content) => {
+  const {titles, categories, sentences, comments} = content;
   return Array(count).fill({}).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments),
     title: titles[getRandomInt(0, titles.length - 1)],
     picture: getPictureFileName(getRandomInt(PictureCodeLimit.MIN, PictureCodeLimit.MAX)),
     description: shuffle(sentences).slice(1, DESCRIPTION_LENGTH_LIMIT + 1).join(` `),
@@ -48,6 +64,8 @@ const runGenerateAndSaveScenario = async (args) => {
   const sentences = await readContent(FILE_SENTENCES_PATH);
   const titles = await readContent(FILE_TITLES_PATH);
   const categories = await readContent(FILE_CATEGORIES_PATH);
+  const comments = await readContent(FILE_COMMENTS_PATH);
+  const content = {sentences, titles, categories, comments};
 
   const [count] = args;
   const adsCount = Number.parseInt(count, 10) || DEFAULT_COUNT;
@@ -56,9 +74,9 @@ const runGenerateAndSaveScenario = async (args) => {
     process.exit(ExitCode.SUCCESS);
   }
 
-  const content = JSON.stringify(generateAds(adsCount, titles, categories, sentences));
+  const formattedContent = JSON.stringify(generateAds(adsCount, content));
   try {
-    await fs.writeFile(`${__dirname}/../../../mocks.json`, content);
+    await fs.writeFile(`${__dirname}/../../../mocks.json`, formattedContent);
     console.info(chalk.green(`Operation success. File created.`));
     process.exit(ExitCode.SUCCESS);
 
